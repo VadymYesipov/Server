@@ -37,17 +37,12 @@ public class Server {
                         int k = 0;
                         for (Socket socket : sockets) {
                             try {
-                                if (socket.getInputStream().available() > 0) {
+                                while (socket.getInputStream().available() > 0) {
                                     k = socket.getInputStream().read();
+                                    for (Socket socket2 : sockets) {
+                                        socket2.getOutputStream().write(k);
+                                    }
                                 }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        for (Socket socket :
-                                sockets) {
-                            try {
-                                socket.getOutputStream().write(k);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
