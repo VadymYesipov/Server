@@ -28,6 +28,7 @@ public class Server {
     public Server() throws IOException {
         serverSocket = new ServerSocket(port);
         sockets = new ArrayList<Socket>();
+
         while (true) {
             sockets.add(serverSocket.accept());
             new Thread(new Runnable() {
@@ -37,15 +38,26 @@ public class Server {
                         int k = 0;
                         for (Socket socket : sockets) {
                             try {
-                                while (socket.getInputStream().available() > 0) {
+                                while(socket.getInputStream().available()>0) {
                                     k = socket.getInputStream().read();
                                     for (Socket socket2 : sockets) {
-                                        socket2.getOutputStream().write(k);
+                                        try {
+                                            socket2.getOutputStream().write(k);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            /*for (Socket socket2 : sockets) {
+                                try {
+                                    socket2.getOutputStream().write(k);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }*/
                         }
                     }
                 }
